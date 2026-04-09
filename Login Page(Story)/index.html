@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitZone Analytics Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+/* BACKGROUND LOGIN */
+body{
+    height:100vh;
+    background:url("https://images.unsplash.com/photo-1554284126-aa88f22d8b74") no-repeat center/cover;
+}
+
+/* OVERLAY */
+.overlay{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+}
+
+/* LOGIN */
+.login-box{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:350px;
+    padding:30px;
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(12px);
+    border-radius:15px;
+    color:white;
+    text-align:center;
+}
+
+.login-box input{
+    width:100%;
+    margin:10px 0;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+}
+
+.login-box button{
+    width:100%;
+    padding:12px;
+    background:#00c6ff;
+    border:none;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+}
+
+/* DASHBOARD */
+.dashboard{
+    display:none;
+    height:100vh;
+    background:#121212;
+    color:white;
+}
+
+/* SIDEBAR */
+.sidebar{
+    position:fixed;
+    width:220px;
+    height:100%;
+    background:#1f1f1f;
+    transition:0.3s;
+}
+
+.sidebar.collapsed{
+    width:70px;
+}
+
+.sidebar h2{
+    padding:20px;
+}
+
+.sidebar a{
+    display:block;
+    padding:15px;
+    color:white;
+    text-decoration:none;
+}
+
+.sidebar a:hover{
+    background:#00c6ff;
+}
+
+/* MAIN */
+.main{
+    margin-left:220px;
+    padding:20px;
+    transition:0.3s;
+}
+
+.main.collapsed{
+    margin-left:70px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* BUTTONS */
+.btn{
+    padding:8px 12px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.toggle{
+    background:#00c6ff;
+}
+
+.logout{
+    background:red;
+}
+
+.dark-toggle{
+    background:#555;
+}
+
+/* IFRAME */
+iframe{
+    width:100%;
+    height:85vh;
+    margin-top:15px;
+    border-radius:10px;
+}
+
+/* LOADER */
+.loader{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:#000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-size:24px;
+    display:none;
+}
+
+.dark-mode{
+    background:#000 !important;
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay"></div>
+
+<!-- LOGIN -->
+<div class="login-box" id="loginPage">
+    <h2>FitZone Login</h2>
+    <input type="text" id="user" placeholder="Username">
+    <input type="password" id="pass" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<!-- LOADER -->
+<div class="loader" id="loader">Loading Dashboard...</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+
+    <div class="sidebar" id="sidebar">
+        <h2>FitZone</h2>
+        <a href="#">🏠 Home</a>
+        <a href="#">📊 Story</a>
+        <a href="#">📈 Reports</a>
+        <a href="#">⚙ Settings</a>
+    </div>
+
+    <div class="main" id="main">
+        <div class="topbar">
+            <div>
+                <button class="btn toggle" onclick="toggleSidebar()">☰</button>
+                <button class="btn dark-toggle" onclick="toggleDark()">🌙</button>
+            </div>
+            <button class="btn logout" onclick="logout()">Logout</button>
+        </div>
+
+        <h2>IBM Cognos Story</h2>
+
+        <!-- YOUR IFRAME -->
+        <iframe src="https://ap2.ca.analytics.ibm.com/bi/?perspective=story&pathRef=.my_folders%2FQ6&closeWindowOnLastView=true&ui_appbar=false&ui_navbar=false&shareMode=embedded&action=view&sceneId=-1&sceneTime=0&nav_filter=true"></iframe>
+    </div>
+
+</div>
+
+<script>
+
+/* AUTO LOGIN SESSION */
+window.onload = () => {
+    if(localStorage.getItem("login") === "true"){
+        showDashboard();
+    }
+}
+
+/* LOGIN */
+function login(){
+    let u = document.getElementById("user").value;
+    let p = document.getElementById("pass").value;
+
+    if(u === "admin" && p === "1234"){
+        localStorage.setItem("login","true");
+        document.getElementById("loader").style.display="flex";
+
+        setTimeout(()=>{
+            showDashboard();
+        },1500);
+    } else {
+        alert("Invalid Login");
+    }
+}
+
+/* SHOW DASHBOARD */
+function showDashboard(){
+    document.getElementById("loginPage").style.display="none";
+    document.querySelector(".overlay").style.display="none";
+    document.getElementById("loader").style.display="none";
+    document.getElementById("dashboard").style.display="block";
+}
+
+/* LOGOUT */
+function logout(){
+    localStorage.removeItem("login");
+    location.reload();
+}
+
+/* SIDEBAR */
+function toggleSidebar(){
+    document.getElementById("sidebar").classList.toggle("collapsed");
+    document.getElementById("main").classList.toggle("collapsed");
+}
+
+/* DARK MODE */
+function toggleDark(){
+    document.body.classList.toggle("dark-mode");
+}
+
+</script>
+
+</body>
+</html>
